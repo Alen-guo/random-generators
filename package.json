@@ -1,12 +1,12 @@
 {
-  "name": "random-hub",
+  "name": "random-generators",
   "version": "1.0.0",
-  "description": "The Ultimate Random Generators Collection - Generate random numbers, names, passwords, colors and much more",
-  "author": "Random Hub Team",
+  "description": "Free online random generator tools: random name generator, random number generator, random password generator and 50+ more tools",
+  "author": "Random Generators Team",
   "license": "MIT",
   "keywords": [
-    "random",
-    "generator",
+    "random generators",
+    "random generator",
     "random-number",
     "password-generator",
     "name-generator",
@@ -15,13 +15,13 @@
     "react",
     "tailwindcss"
   ],
-  "homepage": "https://randomhub.com",
+  "homepage": "https://random-generators.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/randomhub/random-hub"
+    "url": "https://github.com/Alen-guo/random-generators"
   },
   "bugs": {
-    "url": "https://github.com/randomhub/random-hub/issues"
+    "url": "https://github.com/Alen-guo/random-generators/issues"
   },
   "private": true,
   "scripts": {
@@ -42,7 +42,7 @@
     "precommit": "lint-staged",
     "prepare": "husky install",
     "sitemap": "next-sitemap",
-    "lighthouse": "lighthouse https://randomhub.com --output=html --output-path=./lighthouse-report.html"
+    "lighthouse": "lighthouse https://random-generators.org --output=html --output-path=./lighthouse-report.html"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.2",
@@ -72,10 +72,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "cross-env": "^7.0.3",
-    "eslint": "^9",
+    "eslint": "^8.57.0",
     "eslint-config-next": "15.3.3",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -113,5 +113,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "eslint": "^8.57.0"
   }
 }
