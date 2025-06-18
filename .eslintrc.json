@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "next/core-web-vitals"
+    ],
+    "rules": {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "react/no-unescaped-entities": "warn",
+        "@next/next/no-html-link-for-pages": "warn",
+        "jsx-a11y/alt-text": "warn",
+        "@next/next/no-img-element": "warn",
+        "react-hooks/exhaustive-deps": "warn",
+        "prefer-const": "warn",
+        "@typescript-eslint/no-empty-object-type": "warn"
+    }
+}

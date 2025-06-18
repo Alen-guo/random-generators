@@ -1,0 +1,247 @@
+# Random Hub Project - Cursor AI 开发规则
+
+## 项目概述
+Random Hub 是一个综合性的随机生成工具网站，提供数字、文本、颜色、密码等各种随机生成功能。
+全网站内容用地道英语，因为用户是外国人，不过注释用中文。我们之间交流用中文。我是中国人
+
+## 技术栈
+- **前端框架**: Next.js 14 (App Router)
+- **类型系统**: TypeScript
+- **样式系统**: Tailwind CSS + shadcn/ui
+- **状态管理**: Zustand
+- **动画库**: Framer Motion
+- **图标库**: Lucide React
+- **部署平台**: Vercel (计划)
+
+## 代码规范
+
+### 文件命名规则
+- **组件文件**: PascalCase (例: `NumberGenerator.tsx`)
+- **工具文件**: camelCase (例: `numberGenerator.ts`)
+- **页面文件**: lowercase (例: `page.tsx`, `layout.tsx`)
+- **类型文件**: index.ts (统一导出)
+
+### 目录结构
+```
+src/
+├── app/                    # Next.js App Router页面
+├── components/            
+│   ├── ui/                # 基础UI组件 (shadcn/ui)
+│   ├── generators/        # 随机生成器组件
+│   └── common/            # 通用组件
+├── lib/
+│   ├── generators/        # 生成器核心逻辑
+│   └── utils/            # 工具函数
+├── types/                 # TypeScript类型定义
+└── hooks/                # 自定义React Hooks
+```
+
+### TypeScript规则
+- **严格类型**: 所有函数参数和返回值必须有类型定义
+- **接口优先**: 优先使用interface而非type (除非需要联合类型)
+- **导出规范**: 组件使用具名导出，工具类使用默认导出
+- **泛型使用**: 在生成器中合理使用泛型提高复用性
+
+### 组件开发规范
+- **函数式组件**: 所有组件使用函数式组件 + Hooks
+- **Props接口**: 每个组件必须定义Props接口
+- **Ref转发**: 基础UI组件使用forwardRef
+- **状态管理**: 
+  - 组件内部状态用useState
+  - 跨组件状态用Zustand
+  - 服务器状态用React Query (后期)
+
+### CSS和样式规则
+- **Tailwind优先**: 优先使用Tailwind CSS类
+- **响应式设计**: 所有组件必须支持移动端
+- **暗色模式**: 使用CSS变量支持主题切换
+- **动画效果**: 使用Framer Motion实现流畅动画
+
+### 随机生成器开发规范
+- **类结构**: 每个生成器使用静态类方法
+- **配置接口**: 每个生成器有对应的Config接口
+- **错误处理**: 必须处理边界情况和错误状态
+- **性能优化**: 大数据量生成时考虑性能
+
+### SEO优化规范
+- **元数据**: 每个页面必须有title、description、keywords
+- **语义化HTML**: 使用正确的HTML标签
+- **图片优化**: 使用Next.js Image组件
+- **结构化数据**: 为工具页面添加Schema.org标记
+
+### 可访问性规范
+- **ARIA标签**: 为交互元素添加适当的ARIA属性
+- **键盘导航**: 支持完整的键盘操作
+- **屏幕阅读器**: 确保内容可被屏幕阅读器正确读取
+- **对比度**: 确保文字和背景有足够的对比度
+
+## 开发流程
+
+### Git提交规范
+```
+feat: 新功能
+fix: 修复bug
+docs: 文档更新
+style: 代码格式调整
+refactor: 代码重构
+test: 测试相关
+chore: 构建过程或辅助工具变动
+```
+
+### 分支策略
+- `main`: 生产环境代码
+- `develop`: 开发环境代码
+- `feature/功能名`: 功能开发分支
+- `hotfix/修复名`: 紧急修复分支
+
+### 代码审查要点
+1. **类型安全**: 无TypeScript错误
+2. **性能考虑**: 避免不必要的重渲染
+3. **用户体验**: 加载状态、错误处理
+4. **代码复用**: 提取通用逻辑
+5. **测试覆盖**: 核心功能有测试
+
+## 组件模板
+
+### 生成器组件模板
+```tsx
+"use client"
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { GeneratorClass } from '@/lib/generators/generator'
+import { GeneratorConfig } from '@/types'
+import { Icon } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+interface Props {
+  // 组件属性
+}
+
+export function GeneratorComponent({ }: Props) {
+  const [config, setConfig] = useState<GeneratorConfig>({
+    // 默认配置
+  })
+  
+  const [results, setResults] = useState<any[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const generateResults = async () => {
+    setIsGenerating(true)
+    try {
+      const generated = GeneratorClass.generate(config)
+      setResults(generated)
+    } catch (error) {
+      console.error('Error generating:', error)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* 配置面板 */}
+      <Card>
+        {/* 配置UI */}
+      </Card>
+
+      {/* 结果展示 */}
+      {results.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card>
+            {/* 结果UI */}
+          </Card>
+        </motion.div>
+      )}
+    </div>
+  )
+}
+```
+
+### 生成器类模板
+```typescript
+import { GeneratorConfig } from '@/types'
+
+export class GeneratorClass {
+  static generate(config: GeneratorConfig): ResultType[] {
+    // 生成逻辑
+    return results
+  }
+
+  static generateSingle(params: any): ResultType {
+    return this.generate({ ...defaultConfig, ...params })[0]
+  }
+
+  private static helperMethod(): any {
+    // 辅助方法
+  }
+}
+```
+
+## 性能优化指南
+
+### Bundle优化
+- 使用动态导入进行代码分割
+- 优化图片和静态资源
+- 减少第三方库体积
+
+### 渲染优化
+- 使用React.memo包装纯组件
+- 合理使用useCallback和useMemo
+- 避免在render中创建新对象
+
+### 用户体验优化
+- 添加骨架屏和加载状态
+- 实现错误边界
+- 提供有意义的错误信息
+
+## 部署和监控
+
+### 部署检查清单
+- [ ] TypeScript编译无错误
+- [ ] 所有测试通过
+- [ ] SEO元数据完整
+- [ ] 性能指标达标
+- [ ] 可访问性测试通过
+
+### 监控指标
+- Core Web Vitals (LCP, FID, CLS)
+- 生成器使用频率
+- 用户留存率
+- 错误率和性能指标
+
+## 常用命令
+
+```bash
+# 开发
+npm run dev
+
+# 构建
+npm run build
+
+# 类型检查
+npm run type-check
+
+# 代码格式化
+npm run format
+
+# 代码检查
+npm run lint
+```
+
+## 注意事项
+
+1. **随机性质量**: 确保生成的随机数据真正随机
+2. **用户隐私**: 不收集和存储用户生成的敏感数据
+3. **性能限制**: 对大量数据生成设置合理限制
+4. **浏览器兼容**: 支持主流浏览器最新2个版本
+5. **移动优先**: 优先考虑移动端用户体验
+
+## 更新日志
+- 2024-XX-XX: 创建项目基础架构
+- 2024-XX-XX: 完成随机数生成器
+- 2024-XX-XX: 添加更多生成器功能 
