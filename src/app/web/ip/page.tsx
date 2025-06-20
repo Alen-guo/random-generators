@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Globe, RefreshCw, Copy, Download, Network, Wifi, Shield } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface IPConfig {
   type: 'ipv4' | 'ipv6' | 'private' | 'public' | 'local'

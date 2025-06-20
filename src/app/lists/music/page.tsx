@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Music, RefreshCw, Copy, Download, Play, Heart, Clock, Shuffle } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Music, RefreshCw, Copy, Download, Play, Pause, Volume2, Shuffle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface PlaylistConfig {
   genres: string[]
@@ -462,9 +466,9 @@ export default function MusicPage() {
                   onClick={generatePlaylist}
                   disabled={isGenerating}
                   className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 font-semibold notranslate"
-                >
                   translate="no"
                   data-interactive="true"
+                >
                   {isGenerating ? (
                     <>
                       <RefreshCw className="h-4 w-4 mr-2 animate-spin" />

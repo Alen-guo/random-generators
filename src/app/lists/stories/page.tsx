@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { BookOpen, RefreshCw, Copy, Download, User, MapPin, Zap, Heart } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { BookOpen, RefreshCw, Copy, Download, Sparkles, Users } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface StoryConfig {
   genre: string[]
@@ -592,7 +596,7 @@ export default function StoryPage() {
                       onClick={() => loadPreset('fantasy')}
                       className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                     >
-                      <Zap className="h-3 w-3 mr-1" />
+                      <Sparkles className="h-3 w-3 mr-1" />
                       Fantasy
                     </Button>
                     <Button
@@ -601,7 +605,7 @@ export default function StoryPage() {
                       onClick={() => loadPreset('romance')}
                       className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                     >
-                      <Heart className="h-3 w-3 mr-1" />
+                      <Users className="h-3 w-3 mr-1" />
                       Romance
                     </Button>
                     <Button
@@ -610,7 +614,7 @@ export default function StoryPage() {
                       onClick={() => loadPreset('adventure')}
                       className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                     >
-                      <MapPin className="h-3 w-3 mr-1" />
+                      <BookOpen className="h-3 w-3 mr-1" />
                       Adventure
                     </Button>
                     <Button
@@ -619,7 +623,7 @@ export default function StoryPage() {
                       onClick={() => loadPreset('mystery')}
                       className="bg-white/5 border-white/20 text-white hover:bg-white/10"
                     >
-                      <User className="h-3 w-3 mr-1" />
+                      <Sparkles className="h-3 w-3 mr-1" />
                       Mystery
                     </Button>
                   </div>
