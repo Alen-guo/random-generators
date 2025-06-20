@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Shield, Eye, EyeOff, AlertTriangle, CheckCircle, XCircle, Zap, RefreshCw, Copy } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface PasswordAnalysis {
   password: string
@@ -37,6 +38,7 @@ interface GeneratedPassword {
 }
 
 export default function SecurityPage() {
+  const containerRef = useTranslationProtection()
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
@@ -47,6 +49,7 @@ export default function SecurityPage() {
   const [includeNumbers, setIncludeNumbers] = useState(true)
   const [includeSymbols, setIncludeSymbols] = useState(true)
   const [excludeSimilar, setExcludeSimilar] = useState(true)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const commonPasswords = [
     'password', '123456', '123456789', 'qwerty', 'abc123', 'password123',
@@ -172,7 +175,12 @@ export default function SecurityPage() {
     }
   }
 
-  const generateSecurePassword = () => {
+  const generateSecurePassword = async () => {
+    setIsGenerating(true)
+    
+    // Add small delay for animation
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     let charset = ''
     if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz'
     if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -203,6 +211,8 @@ export default function SecurityPage() {
 
     setGeneratedPasswords([generated, ...generatedPasswords.slice(0, 9)]) // Keep last 10
     setPassword(password)
+    
+    setIsGenerating(false)
   }
 
   const copyPassword = (pwd: string) => {
@@ -235,7 +245,7 @@ export default function SecurityPage() {
   }, [password])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -495,11 +505,22 @@ export default function SecurityPage() {
 
                 <Button
                   onClick={generateSecurePassword}
-                  disabled={!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold"
+                  disabled={isGenerating || (!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols)}
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Generate Password
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Generate Password
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>

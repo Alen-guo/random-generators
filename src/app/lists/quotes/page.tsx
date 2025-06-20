@@ -84,36 +84,42 @@ export default function QuotesPage() {
   const generateQuote = async () => {
     setIsGenerating(true)
     
-    // Filter quotes by selected categories
-    const allQuotes = [...predefinedQuotes, ...customQuotes]
-    const filteredQuotes = allQuotes.filter(quote => 
-      selectedCategories.length === 0 || selectedCategories.includes(quote.category)
-    )
-    
-    if (filteredQuotes.length === 0) {
+    try {
+      // Filter quotes by selected categories
+      const allQuotes = [...predefinedQuotes, ...customQuotes]
+      const filteredQuotes = allQuotes.filter(quote => 
+        selectedCategories.length === 0 || selectedCategories.includes(quote.category)
+      )
+      
+      if (filteredQuotes.length === 0) {
+        setIsGenerating(false)
+        return
+      }
+      
+      // Animation effect for better UX
+      for (let i = 0; i < 3; i++) {
+        const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)]
+        setCurrentQuote(randomQuote)
+        await new Promise(resolve => setTimeout(resolve, 150))
+      }
+      
+      // Final selection
+      const finalQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)]
+      setCurrentQuote(finalQuote)
+      
+      const generatedQuote: GeneratedQuote = {
+        ...finalQuote,
+        timestamp: new Date(),
+        liked: false
+      }
+      
+      setQuoteHistory(prev => [generatedQuote, ...prev.slice(0, 19)]) // Keep last 20
+      
+    } catch (error) {
+      console.error('Error generating quote:', error)
+    } finally {
       setIsGenerating(false)
-      return
     }
-    
-    // Animation effect
-    for (let i = 0; i < 5; i++) {
-      const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)]
-      setCurrentQuote(randomQuote)
-      await new Promise(resolve => setTimeout(resolve, 200))
-    }
-    
-    // Final selection
-    const finalQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)]
-    setCurrentQuote(finalQuote)
-    
-    const generatedQuote: GeneratedQuote = {
-      ...finalQuote,
-      timestamp: new Date(),
-      liked: false
-    }
-    
-    setQuoteHistory(prev => [generatedQuote, ...prev.slice(0, 19)]) // Keep last 20
-    setIsGenerating(false)
   }
 
   const toggleCategory = (category: string) => {

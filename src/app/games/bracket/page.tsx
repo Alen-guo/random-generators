@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Trophy, Shuffle, RotateCcw, Copy, Download, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface BracketConfig {
   tournamentName: string
@@ -35,6 +36,7 @@ interface Bracket {
 }
 
 export default function BracketPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<BracketConfig>({
     tournamentName: 'Tournament',
     bracketType: 'single',
@@ -192,7 +194,7 @@ export default function BracketPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-900 via-orange-900 to-red-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-yellow-900 via-orange-900 to-red-900">
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -268,7 +270,9 @@ export default function BracketPage() {
               <Button 
                 onClick={generateBracket}
                 disabled={isGenerating || !playerList.trim()}
-                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
+                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
               >
                 {isGenerating ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Image, RefreshCw, Copy, Download, Grid, Camera, Palette } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface ImageConfig {
   width: number
@@ -27,6 +28,7 @@ interface GeneratedImage {
 }
 
 export default function ImagesPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<ImageConfig>({
     width: 800,
     height: 600,
@@ -100,27 +102,46 @@ export default function ImagesPage() {
   }
 
   const generatePlaceholderUrl = (config: ImageConfig): string => {
-    // Using placeholder services for demo
+    // Enhanced placeholder generation with better variety
     const { width, height, category, style } = config
+    const seed = Math.floor(Math.random() * 1000000)
     
     if (style === 'gradients') {
-      const colors = ['FF6B6B', '4ECDC4', '45B7D1', '96CEB4', 'FFEAA7', 'DDA0DD']
-      const color1 = colors[Math.floor(Math.random() * colors.length)]
-      const color2 = colors[Math.floor(Math.random() * colors.length)]
-      return `https://via.placeholder.com/${width}x${height}/${color1}/${color2}?text=Gradient`
+      const gradients = [
+        'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'linear-gradient(45deg, #4facfe 0%, #00f2fe 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+        'linear-gradient(45deg, #fa709a 0%, #fee140 100%)'
+      ]
+      const gradient = gradients[Math.floor(Math.random() * gradients.length)]
+      // Create data URL for gradient
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        const grd = ctx.createLinearGradient(0, 0, width, height)
+        grd.addColorStop(0, '#667eea')
+        grd.addColorStop(1, '#764ba2')
+        ctx.fillStyle = grd
+        ctx.fillRect(0, 0, width, height)
+        return canvas.toDataURL()
+      }
     }
     
     if (style === 'patterns') {
-      const patternTypes = ['checkered', 'dots', 'stripes', 'triangles']
-      const pattern = patternTypes[Math.floor(Math.random() * patternTypes.length)]
-      return `https://via.placeholder.com/${width}x${height}/333333/FFFFFF?text=${pattern}`
+      // Generate geometric patterns
+      const patterns = ['dots', 'stripes', 'checkers', 'triangles', 'hexagons']
+      const pattern = patterns[Math.floor(Math.random() * patterns.length)]
+      return `https://dummyimage.com/${width}x${height}/2D3748/4A5568.png&text=${pattern.toUpperCase()}`
     }
     
-    // For photos and illustrations, use different placeholder services
+    // Use multiple placeholder services for variety
     const services = [
-      `https://picsum.photos/${width}/${height}?random=${Date.now() + Math.random()}`,
-      `https://via.placeholder.com/${width}x${height}/6B73FF/FFFFFF?text=${category}`,
-      `https://dummyimage.com/${width}x${height}/4ECDC4/000000.png&text=${style}`
+      `https://picsum.photos/${width}/${height}?random=${seed}`,
+      `https://source.unsplash.com/${width}x${height}/?${category}&sig=${seed}`,
+      `https://via.placeholder.com/${width}x${height}/6366F1/FFFFFF?text=${category.toUpperCase()}`
     ]
     
     return services[Math.floor(Math.random() * services.length)]
@@ -184,7 +205,7 @@ export default function ImagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -319,7 +340,9 @@ export default function ImagesPage() {
                   <Button
                     onClick={generateImages}
                     disabled={isGenerating}
-                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 font-semibold"
+                    className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 font-semibold notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isGenerating ? (
                       <>

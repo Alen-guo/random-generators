@@ -32,6 +32,7 @@ export default function PickerPage() {
   const [newItemText, setNewItemText] = useState('')
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [results, setResults] = useState<PickResult[]>([])
   const [pickCount, setPickCount] = useState(1)
   const [allowDuplicates, setAllowDuplicates] = useState(true)
@@ -75,6 +76,7 @@ export default function PickerPage() {
     if (items.length === 0) return
 
     setIsAnimating(true)
+    setIsGenerating(true)
     setSelectedItem(null)
 
     // Animation effect
@@ -123,6 +125,7 @@ export default function PickerPage() {
 
     setSelectedItem(pickedItems.join(', '))
     setIsAnimating(false)
+    setIsGenerating(false)
   }
 
   const loadPreset = (preset: 'yesno' | 'directions' | 'meals' | 'activities') => {

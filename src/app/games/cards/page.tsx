@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Shuffle, RotateCcw, Copy, Download, Spade, Heart, Club, Diamond } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface PlayingCard {
   suit: 'spades' | 'hearts' | 'clubs' | 'diamonds'
@@ -37,6 +38,7 @@ const ranks = [
 ]
 
 export default function CardsPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<DeckConfig>({
     includeJokers: false,
     numberOfDecks: 1,
@@ -187,7 +189,7 @@ export default function CardsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-blue-900 to-teal-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-green-900 via-blue-900 to-teal-900">
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -260,7 +262,9 @@ export default function CardsPage() {
                   <Button 
                     onClick={shuffleDeck}
                     disabled={isShuffling}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isShuffling ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

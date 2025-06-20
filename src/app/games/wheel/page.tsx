@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RotateCcw, Play, Trophy, Settings, Plus, Trash2, History, Gift } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface WheelItem {
   id: number
@@ -22,6 +23,7 @@ interface SpinResult {
 }
 
 export default function WheelPage() {
+  const containerRef = useTranslationProtection()
   const [items, setItems] = useState<WheelItem[]>([
     { id: 1, text: 'Option 1', color: '#FF6B6B', weight: 1 },
     { id: 2, text: 'Option 2', color: '#4ECDC4', weight: 1 },
@@ -233,7 +235,7 @@ export default function WheelPage() {
   const segments = getWheelSegments()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -335,7 +337,9 @@ export default function WheelPage() {
                   <Button
                     onClick={spin}
                     disabled={isSpinning || items.length === 0}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0"
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isSpinning ? (
                       <>

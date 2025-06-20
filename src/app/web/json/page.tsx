@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Database, RefreshCw, Copy, Download, Code, Users, ShoppingCart } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface DataField {
   id: string
@@ -23,6 +24,7 @@ interface GeneratedData {
 }
 
 export default function JsonPage() {
+  const containerRef = useTranslationProtection()
   const [schema, setSchema] = useState<DataField[]>([
     { id: '1', name: 'id', type: 'number' },
     { id: '2', name: 'name', type: 'string' },
@@ -233,7 +235,7 @@ export default function JsonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -392,7 +394,9 @@ export default function JsonPage() {
                 <Button
                   onClick={generateData}
                   disabled={isGenerating || schema.length === 0}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -525,5 +529,5 @@ export default function JsonPage() {
         </div>
       </div>
     </div>
-      )
-  }
+  )
+}

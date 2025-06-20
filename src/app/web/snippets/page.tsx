@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Code, RefreshCw, Copy, Download, FileCode, Braces, Play } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface SnippetConfig {
   language: string
@@ -33,6 +34,7 @@ interface GeneratedSnippet {
 }
 
 export default function SnippetsPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<SnippetConfig>({
     language: 'javascript',
     category: 'function',
@@ -647,23 +649,37 @@ Collection of useful Python decorators:
     const templates = {
       javascript: `// ${config.category} example
 function example${config.category.charAt(0).toUpperCase() + config.category.slice(1)}() {
-  // TODO: Implement ${config.category} logic
-  console.log('Hello from ${config.category}!');
-  return true;
+  // Implementation for ${config.category} functionality
+  const result = performOperation();
+  console.log('Operation completed:', result);
+  return result;
+}
+
+function performOperation() {
+  return { success: true, data: 'sample data' };
 }
 
 example${config.category.charAt(0).toUpperCase() + config.category.slice(1)}();`,
       python: `# ${config.category} example
 def example_${config.category}():
-    """TODO: Implement ${config.category} logic"""
-    print(f'Hello from ${config.category}!')
-    return True
+    """Implementation for ${config.category} functionality"""
+    result = perform_operation()
+    print(f'Operation completed: {result}')
+    return result
+
+def perform_operation():
+    return {'success': True, 'data': 'sample data'}
 
 example_${config.category}()`,
       java: `// ${config.category} example
 public class Example${config.category.charAt(0).toUpperCase() + config.category.slice(1)} {
     public static void main(String[] args) {
-        System.out.println("Hello from ${config.category}!");
+        String result = performOperation();
+        System.out.println("Operation completed: " + result);
+    }
+    
+    private static String performOperation() {
+        return "sample data";
     }
 }`
     }
@@ -768,7 +784,7 @@ ${snippet.documentation ? `${snippet.documentation}\n\n` : ''}${snippet.code}`
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -952,7 +968,9 @@ ${snippet.documentation ? `${snippet.documentation}\n\n` : ''}${snippet.code}`
                 <Button
                   onClick={generateSnippet}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

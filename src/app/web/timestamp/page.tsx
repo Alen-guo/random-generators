@@ -26,6 +26,7 @@ export default function TimestampPage() {
   const [convertedTime, setConvertedTime] = useState<TimestampResult | null>(null)
   const [results, setResults] = useState<TimestampResult[]>([])
   const [autoUpdate, setAutoUpdate] = useState(true)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const generateTimestamp = (date?: Date): TimestampResult => {
     const targetDate = date || new Date()
@@ -62,7 +63,9 @@ export default function TimestampPage() {
     setCurrentTime(generateTimestamp())
   }
 
-  const generateCustomTimestamp = () => {
+  const generateCustomTimestamp = async () => {
+    setIsGenerating(true)
+    
     try {
       let targetDate: Date
       
@@ -78,14 +81,21 @@ export default function TimestampPage() {
         throw new Error('Invalid date')
       }
       
+      // Add slight delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
       const result = generateTimestamp(targetDate)
       setResults(prev => [result, ...prev.slice(0, 9)])
     } catch (error) {
       console.error('Error generating timestamp:', error)
+    } finally {
+      setIsGenerating(false)
     }
   }
 
-  const convertFromTimestamp = () => {
+  const convertFromTimestamp = async () => {
+    setIsGenerating(true)
+    
     try {
       const timestamp = parseInt(customTimestamp)
       if (isNaN(timestamp)) {
@@ -99,40 +109,56 @@ export default function TimestampPage() {
         throw new Error('Invalid timestamp')
       }
       
+      // Add slight delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
       setConvertedTime(generateTimestamp(date))
     } catch (error) {
       console.error('Error converting timestamp:', error)
+    } finally {
+      setIsGenerating(false)
     }
   }
 
-  const generateRandomTimestamp = (type: 'past' | 'future' | 'thisYear' | 'random') => {
-    let targetDate: Date
-    const now = new Date()
+  const generateRandomTimestamp = async (type: 'past' | 'future' | 'thisYear' | 'random') => {
+    setIsGenerating(true)
     
-    switch (type) {
-      case 'past':
-        const pastDays = Math.floor(Math.random() * 365) + 1
-        targetDate = new Date(now.getTime() - pastDays * 24 * 60 * 60 * 1000)
-        break
-      case 'future':
-        const futureDays = Math.floor(Math.random() * 365) + 1
-        targetDate = new Date(now.getTime() + futureDays * 24 * 60 * 60 * 1000)
-        break
-      case 'thisYear':
-        const startOfYear = new Date(now.getFullYear(), 0, 1)
-        const endOfYear = new Date(now.getFullYear(), 11, 31)
-        const randomTime = startOfYear.getTime() + Math.random() * (endOfYear.getTime() - startOfYear.getTime())
-        targetDate = new Date(randomTime)
-        break
-      default:
-        // Random between 1970 and 2050
-        const minTime = new Date('1970-01-01').getTime()
-        const maxTime = new Date('2050-12-31').getTime()
-        targetDate = new Date(minTime + Math.random() * (maxTime - minTime))
+    try {
+      let targetDate: Date
+      const now = new Date()
+      
+      switch (type) {
+        case 'past':
+          const pastDays = Math.floor(Math.random() * 365) + 1
+          targetDate = new Date(now.getTime() - pastDays * 24 * 60 * 60 * 1000)
+          break
+        case 'future':
+          const futureDays = Math.floor(Math.random() * 365) + 1
+          targetDate = new Date(now.getTime() + futureDays * 24 * 60 * 60 * 1000)
+          break
+        case 'thisYear':
+          const startOfYear = new Date(now.getFullYear(), 0, 1)
+          const endOfYear = new Date(now.getFullYear(), 11, 31)
+          const randomTime = startOfYear.getTime() + Math.random() * (endOfYear.getTime() - startOfYear.getTime())
+          targetDate = new Date(randomTime)
+          break
+        default:
+          // Random between 1970 and 2050
+          const minTime = new Date('1970-01-01').getTime()
+          const maxTime = new Date('2050-12-31').getTime()
+          targetDate = new Date(minTime + Math.random() * (maxTime - minTime))
+      }
+      
+      // Add slight delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
+      const result = generateTimestamp(targetDate)
+      setResults(prev => [result, ...prev.slice(0, 9)])
+    } catch (error) {
+      console.error('Error generating random timestamp:', error)
+    } finally {
+      setIsGenerating(false)
     }
-    
-    const result = generateTimestamp(targetDate)
-    setResults(prev => [result, ...prev.slice(0, 9)])
   }
 
   const copyToClipboard = (text: string) => {
@@ -287,31 +313,63 @@ export default function TimestampPage() {
               <CardContent className="space-y-3">
                 <Button
                   onClick={() => generateRandomTimestamp('past')}
+                  disabled={isGenerating}
                   variant="outline"
                   className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10"
                 >
-                  Random Past (1 Year)
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Random Past (1 Year)'
+                  )}
                 </Button>
                 <Button
                   onClick={() => generateRandomTimestamp('future')}
+                  disabled={isGenerating}
                   variant="outline"
                   className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10"
                 >
-                  Random Future (1 Year)
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Random Future (1 Year)'
+                  )}
                 </Button>
                 <Button
                   onClick={() => generateRandomTimestamp('thisYear')}
+                  disabled={isGenerating}
                   variant="outline"
                   className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10"
                 >
-                  Random This Year
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Random This Year'
+                  )}
                 </Button>
                 <Button
                   onClick={() => generateRandomTimestamp('random')}
+                  disabled={isGenerating}
                   variant="outline"
                   className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10"
                 >
-                  Random (1970-2050)
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-3 w-3 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Random (1970-2050)'
+                  )}
                 </Button>
               </CardContent>
             </Card>
@@ -391,12 +449,22 @@ export default function TimestampPage() {
 
                 <Button
                   onClick={generateCustomTimestamp}
+                  disabled={isGenerating}
                   className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 notranslate"
                   translate="no"
                   data-interactive="true"
                 >
-                  <Clock className="h-4 w-4 mr-2" />
-                  Generate Timestamp
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Clock className="h-4 w-4 mr-2" />
+                      Generate Timestamp
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
@@ -429,12 +497,22 @@ export default function TimestampPage() {
 
                 <Button
                   onClick={convertFromTimestamp}
+                  disabled={isGenerating}
                   className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 notranslate"
                   translate="no"
                   data-interactive="true"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Convert
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Converting...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Convert
+                    </>
+                  )}
                 </Button>
 
                 {convertedTime && (

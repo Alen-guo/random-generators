@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Shuffle, RotateCcw, Copy, Download, Grid3X3, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface BingoConfig {
   gridSize: number
@@ -34,6 +35,7 @@ const presets = [
 ]
 
 export default function BingoPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<BingoConfig>({
     gridSize: 5,
     minNumber: 1,
@@ -198,7 +200,7 @@ export default function BingoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-pink-900 to-purple-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900">
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -312,7 +314,9 @@ export default function BingoPage() {
                   <Button 
                     onClick={generateBingoCards}
                     disabled={isGenerating}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isGenerating ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

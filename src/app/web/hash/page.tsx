@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Shield, RefreshCw, Copy, Eye, EyeOff, Lock, Hash } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface HashResult {
   algorithm: string
@@ -17,6 +18,7 @@ interface HashResult {
 }
 
 export default function HashPage() {
+  const containerRef = useTranslationProtection()
   const [input, setInput] = useState('')
   const [selectedAlgorithms, setSelectedAlgorithms] = useState<string[]>(['md5', 'sha256'])
   const [hashResults, setHashResults] = useState<HashResult[]>([])
@@ -198,7 +200,7 @@ export default function HashPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -322,7 +324,9 @@ export default function HashPage() {
                   <Button
                     onClick={generateHashes}
                     disabled={isGenerating || !input.trim() || selectedAlgorithms.length === 0}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 font-semibold"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 font-semibold notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isGenerating ? (
                       <>

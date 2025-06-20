@@ -20,9 +20,11 @@ export default function CoinFlipperPage() {
   const [results, setResults] = useState<CoinResult[]>([])
   const [history, setHistory] = useState<CoinResult[]>([])
   const [isFlipping, setIsFlipping] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const flipCoins = async () => {
     setIsFlipping(true)
+    setIsGenerating(true)
     
     // 添加翻转动画延迟
     await new Promise(resolve => setTimeout(resolve, 1000))
@@ -39,6 +41,7 @@ export default function CoinFlipperPage() {
     setResults(newResults)
     setHistory(prev => [...newResults, ...prev].slice(0, 50))
     setIsFlipping(false)
+    setIsGenerating(false)
   }
 
   const getStats = () => {

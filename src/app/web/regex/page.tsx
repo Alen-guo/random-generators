@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Zap, RefreshCw, Copy, Download, TestTube, Eye, CheckCircle, XCircle } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface RegexConfig {
   type: string
@@ -29,6 +30,7 @@ interface GeneratedRegex {
 }
 
 export default function RegexPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<RegexConfig>({
     type: 'email',
     customPattern: '',
@@ -456,7 +458,7 @@ ${regex.examples.invalid.map(ex => `✗ ${ex}`).join('\n')}` : ''}`
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -617,7 +619,9 @@ ${regex.examples.invalid.map(ex => `✗ ${ex}`).join('\n')}` : ''}`
                 <Button
                   onClick={generateRegex}
                   disabled={isGenerating || (config.type === 'custom' && !config.customPattern.trim())}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

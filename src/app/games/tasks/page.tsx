@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CheckSquare, RefreshCw, Copy, Download, Plus, Trash2, Clock, Target, Zap, Home } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface TaskConfig {
   types: string[]
@@ -31,6 +32,7 @@ interface GeneratedTask {
 }
 
 export default function TasksPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<TaskConfig>({
     types: ['daily'],
     difficulty: 'mixed',
@@ -601,7 +603,7 @@ export default function TasksPage() {
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -761,7 +763,9 @@ export default function TasksPage() {
                 <Button
                   onClick={generateTasks}
                   disabled={isGenerating || config.types.length === 0}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -990,5 +994,5 @@ export default function TasksPage() {
         </div>
       </div>
     </div>
-      )
-  }
+  )
+}

@@ -228,7 +228,7 @@ export function HeroSection() {
                               <div className="flex items-center gap-2">
                                 <div 
                                   className="w-4 h-4 rounded border border-white/20" 
-                                  style={{ backgroundColor: demo.value }}
+                                  style={{ backgroundColor: String(demo.value) }}
                                 />
                                 {demo.value}
                               </div>
