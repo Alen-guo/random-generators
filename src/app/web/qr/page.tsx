@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { QrCode, Download, Copy, Link, Mail, Phone, Wifi, MapPin, CreditCard, Settings } from 'lucide-react'
+import QRCode from 'qrcode'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface QRData {
   type: 'text' | 'url' | 'email' | 'phone' | 'sms' | 'wifi' | 'location' | 'vcard'
@@ -15,6 +17,7 @@ interface QRData {
 }
 
 export default function QRCodePage() {
+  const containerRef = useTranslationProtection()
   const [qrData, setQrData] = useState<QRData>({
     type: 'text',
     content: '',
@@ -39,119 +42,40 @@ export default function QRCodePage() {
     name: '', phone: '', email: '', company: '', website: '', address: ''
   })
 
-  // Simple QR Code generation (placeholder - in real app would use qrcode library)
+  // 真正的QR码生成函数
   const generateQRCode = async () => {
     if (!qrData.content.trim()) return
 
     setIsGenerating(true)
     
-    // Simulate QR generation delay
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    // In a real implementation, you would use a library like 'qrcode'
-    // For now, we'll create a simple placeholder pattern
-    const canvas = canvasRef.current
-    if (!canvas) {
+    try {
+      const canvas = canvasRef.current
+      if (!canvas) {
+        setIsGenerating(false)
+        return
+      }
+
+      // 使用qrcode库生成真正的二维码
+      await QRCode.toCanvas(canvas, qrData.content, {
+        width: qrSize,
+        margin: margin,
+        color: {
+          dark: foregroundColor,
+          light: backgroundColor
+        },
+        errorCorrectionLevel: errorLevel
+      })
+
+      setQrData(prev => ({ ...prev, generated: true }))
+    } catch (error) {
+      console.error('QR Code generation failed:', error)
+      alert('Failed to generate QR code. Please check your input.')
+    } finally {
       setIsGenerating(false)
-      return
-    }
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      setIsGenerating(false)
-      return
-    }
-
-    canvas.width = qrSize
-    canvas.height = qrSize
-
-    // Fill background
-    ctx.fillStyle = backgroundColor
-    ctx.fillRect(0, 0, qrSize, qrSize)
-
-    // Create a simple QR-like pattern (placeholder)
-    ctx.fillStyle = foregroundColor
-    const moduleSize = (qrSize - margin * 2) / 25
-    const startX = margin
-    const startY = margin
-
-    // Generate a simple pattern based on content
-    const pattern = generatePattern(qrData.content)
-    
-    for (let i = 0; i < 25; i++) {
-      for (let j = 0; j < 25; j++) {
-        if (pattern[i][j]) {
-          ctx.fillRect(
-            startX + j * moduleSize,
-            startY + i * moduleSize,
-            moduleSize,
-            moduleSize
-          )
-        }
-      }
-    }
-
-    setQrData(prev => ({ ...prev, generated: true }))
-    setIsGenerating(false)
-  }
-
-  // Generate a deterministic pattern based on content
-  const generatePattern = (content: string): boolean[][] => {
-    const pattern: boolean[][] = Array(25).fill(null).map(() => Array(25).fill(false))
-    
-    // Create a simple hash of the content
-    let hash = 0
-    for (let i = 0; i < content.length; i++) {
-      hash = ((hash << 5) - hash + content.charCodeAt(i)) & 0xffffffff
-    }
-    
-    // Use hash to generate pseudo-random pattern
-    const rng = createPseudoRandom(hash)
-    
-    // Add finder patterns (corners)
-    addFinderPattern(pattern, 0, 0)
-    addFinderPattern(pattern, 0, 18)
-    addFinderPattern(pattern, 18, 0)
-    
-    // Fill data area with pattern
-    for (let i = 0; i < 25; i++) {
-      for (let j = 0; j < 25; j++) {
-        if (!isFinderArea(i, j)) {
-          pattern[i][j] = rng() > 0.5
-        }
-      }
-    }
-    
-    return pattern
-  }
-
-  const createPseudoRandom = (seed: number) => {
-    let s = seed
-    return () => {
-      s = (s * 1664525 + 1013904223) % 4294967296
-      return s / 4294967296
     }
   }
 
-  const addFinderPattern = (pattern: boolean[][], startRow: number, startCol: number) => {
-    for (let i = 0; i < 7; i++) {
-      for (let j = 0; j < 7; j++) {
-        if (startRow + i < 25 && startCol + j < 25) {
-          const isBorder = i === 0 || i === 6 || j === 0 || j === 6
-          const isCenter = i >= 2 && i <= 4 && j >= 2 && j <= 4
-          pattern[startRow + i][startCol + j] = isBorder || isCenter
-        }
-      }
-    }
-  }
 
-  const isFinderArea = (row: number, col: number): boolean => {
-    return (
-      (row < 9 && col < 9) || // Top-left
-      (row < 9 && col > 15) || // Top-right
-      (row > 15 && col < 9)    // Bottom-left
-    )
-  }
 
   const buildQRContent = () => {
     switch (qrData.type) {
@@ -470,7 +394,7 @@ export default function QRCodePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 generator-container">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -502,17 +426,19 @@ export default function QRCodePage() {
               </CardHeader>
               <CardContent className="flex flex-col items-center space-y-4">
                 {/* QR码画�?*/}
-                <div className="p-4 bg-white rounded-lg">
+                <div className="p-4 bg-white rounded-lg" data-result="true" translate="no">
                   <canvas
                     ref={canvasRef}
                     width={qrSize}
                     height={qrSize}
-                    className="max-w-full h-auto border border-gray-200"
+                    className="max-w-full h-auto border border-gray-200 notranslate"
                     style={{ 
                       width: '240px', 
                       height: '240px',
                       imageRendering: 'pixelated'
                     }}
+                    translate="no"
+                    data-result="true"
                   />
                 </div>
 
@@ -520,7 +446,9 @@ export default function QRCodePage() {
                   <div className="flex gap-2 w-full">
                     <Button
                       onClick={downloadQR}
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white border-0"
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white border-0 notranslate"
+                      translate="no"
+                      data-interactive="true"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download
@@ -528,7 +456,9 @@ export default function QRCodePage() {
                     <Button
                       onClick={copyQRImage}
                       variant="outline"
-                      className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20 notranslate"
+                      translate="no"
+                      data-interactive="true"
                     >
                       <Copy className="h-4 w-4 mr-2" />
                       Copy
@@ -739,7 +669,9 @@ export default function QRCodePage() {
                 <Button 
                   onClick={handleGenerate}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

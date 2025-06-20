@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dices, RefreshCw, Copy, TrendingUp, History } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface DiceResult {
   value: number
@@ -23,6 +24,7 @@ interface DiceSet {
 }
 
 export default function DicePage() {
+  const containerRef = useTranslationProtection()
   const [diceCount, setDiceCount] = useState(2)
   const [diceSides, setDiceSides] = useState(6)
   const [currentRoll, setCurrentRoll] = useState<DiceResult[]>([])
@@ -149,7 +151,7 @@ export default function DicePage() {
   const statistics = getStatistics()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -237,7 +239,9 @@ export default function DicePage() {
                 <Button
                   onClick={rollDice}
                   disabled={isRolling}
-                  className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white border-0 font-semibold text-lg py-3"
+                  className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white border-0 font-semibold text-lg py-3 notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isRolling ? (
                     <>

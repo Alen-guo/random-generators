@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Target, Sparkles, RefreshCw, Copy, Download, Plus, Trash2, History, Zap } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface PickerItem {
   id: number
@@ -22,6 +23,7 @@ interface PickResult {
 }
 
 export default function PickerPage() {
+  const containerRef = useTranslationProtection()
   const [items, setItems] = useState<PickerItem[]>([
     { id: 1, text: 'Option 1', weight: 1, color: '#FF6B6B' },
     { id: 2, text: 'Option 2', weight: 1, color: '#4ECDC4' },
@@ -204,7 +206,7 @@ export default function PickerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -292,7 +294,9 @@ export default function PickerPage() {
                   <Button
                     onClick={pickRandom}
                     disabled={isAnimating || items.length === 0}
-                    className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white border-0 font-semibold"
+                    className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white border-0 font-semibold notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isAnimating ? (
                       <>

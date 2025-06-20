@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -8,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Hash, Shuffle, Copy, Download } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface SequenceConfig {
   type: 'arithmetic' | 'geometric' | 'fibonacci' | 'prime' | 'custom'
@@ -20,6 +22,7 @@ interface SequenceConfig {
 }
 
 export default function SequencesPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<SequenceConfig>({
     type: 'arithmetic',
     start: 1,
@@ -107,7 +110,8 @@ export default function SequencesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
@@ -225,7 +229,9 @@ export default function SequencesPage() {
               <Button 
                 onClick={generateSequence}
                 disabled={isGenerating}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
               >
                 {isGenerating ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

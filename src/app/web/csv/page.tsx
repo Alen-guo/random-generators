@@ -1,19 +1,28 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { FileText, Shuffle, Download } from 'lucide-react'
+import { FileText, Shuffle, Download, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export default function CSVPage() {
+  const containerRef = useTranslationProtection()
   const [rows, setRows] = useState(10)
   const [columns, setColumns] = useState('Name,Email,Age,City')
   const [csvData, setCsvData] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const generateCSV = () => {
+  const generateCSV = async () => {
+    setIsGenerating(true)
+    
+    // 添加延迟以显示加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     const headers = columns.split(',').map(h => h.trim())
     const sampleData = {
       Name: ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'],
@@ -39,6 +48,7 @@ export default function CSVPage() {
     }
     
     setCsvData(csv)
+    setIsGenerating(false)
   }
 
   const downloadCSV = () => {
@@ -54,7 +64,8 @@ export default function CSVPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">CSV Generator</h1>
@@ -95,9 +106,24 @@ export default function CSVPage() {
                   />
                 </div>
               </div>
-              <Button onClick={generateCSV} className="w-full bg-green-600 hover:bg-green-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate CSV Data
+              <Button 
+                onClick={generateCSV} 
+                disabled={isGenerating}
+                className="w-full bg-green-600 hover:bg-green-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate CSV Data
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -123,6 +149,7 @@ export default function CSVPage() {
                   value={csvData}
                   readOnly
                   className="bg-white/10 border-white/20 text-white font-mono text-sm min-h-[300px]"
+                  data-result="true"
                 />
               </CardContent>
             </Card>

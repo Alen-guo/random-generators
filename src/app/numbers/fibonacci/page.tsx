@@ -1,17 +1,26 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Hash, Shuffle } from 'lucide-react'
+import { Hash, Shuffle, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export default function FibonacciPage() {
+  const containerRef = useTranslationProtection()
   const [count, setCount] = useState(15)
   const [fibonacci, setFibonacci] = useState<number[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const generateFibonacci = () => {
+  const generateFibonacci = async () => {
+    setIsGenerating(true)
+    
+    // 添加延迟以显示加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     const result: number[] = []
     
     if (count >= 1) result.push(0)
@@ -22,10 +31,12 @@ export default function FibonacciPage() {
     }
     
     setFibonacci(result)
+    setIsGenerating(false)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-yellow-900 to-orange-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-amber-900 via-yellow-900 to-orange-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Fibonacci Sequence Generator</h1>
@@ -55,9 +66,24 @@ export default function FibonacciPage() {
                   className="bg-white/10 border-white/20 text-white"
                 />
               </div>
-              <Button onClick={generateFibonacci} className="w-full bg-amber-600 hover:bg-amber-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate Fibonacci Sequence
+              <Button 
+                onClick={generateFibonacci} 
+                disabled={isGenerating}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate Fibonacci Sequence
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -68,7 +94,7 @@ export default function FibonacciPage() {
                 <CardTitle className="text-white">Fibonacci Sequence</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2" data-result="true">
                   {fibonacci.map((num, index) => (
                     <div key={index} className="bg-white/20 rounded-lg p-3 text-center text-white font-mono">
                       <div className="text-xs text-amber-300">F({index})</div>

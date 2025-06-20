@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calendar, RefreshCw, Copy, Download, Clock, CalendarDays } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface DateConfig {
   startDate: string
@@ -27,6 +28,7 @@ interface GeneratedDate {
 }
 
 export default function DatesPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<DateConfig>({
     startDate: '2020-01-01',
     endDate: new Date().toISOString().split('T')[0],
@@ -252,7 +254,7 @@ export default function DatesPage() {
   const stats = getDateStats()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -377,7 +379,9 @@ export default function DatesPage() {
                 <Button
                   onClick={generateDates}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -540,5 +544,5 @@ export default function DatesPage() {
         </div>
       </div>
     </div>
-      )
-  }
+  )
+}

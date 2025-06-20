@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { TranslationProtectionProvider } from "@/components/common/TranslationProtectionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -171,6 +172,9 @@ export default function RootLayout({
         <meta name="application-name" content="Random Generators" />
         <meta name="msapplication-TileColor" content="#8B5CF6" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
+        
+        {/* 谷歌翻译配置 - 允许翻译但保护关键元素 */}
+        <meta name="google-translate-customization" content="9f841e7780177523-3214ceb76f765f38-gc38c6fe6f9d06436-c" />
       </head>
       <body className={`${inter.className} antialiased`}>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md z-50">
@@ -178,7 +182,9 @@ export default function RootLayout({
         </a>
         
         <main id="main-content" role="main">
-          {children}
+          <TranslationProtectionProvider>
+            {children}
+          </TranslationProtectionProvider>
         </main>
         
         {process.env.NODE_ENV === "production" && gaId && (

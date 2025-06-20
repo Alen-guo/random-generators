@@ -1,19 +1,23 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calendar, Shuffle, Copy } from 'lucide-react'
+import { Calendar, Shuffle, Copy, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export default function DatesPage() {
+  const containerRef = useTranslationProtection()
   const [count, setCount] = useState(10)
   const [startDate, setStartDate] = useState('2020-01-01')
   const [endDate, setEndDate] = useState('2024-12-31')
   const [format, setFormat] = useState('YYYY-MM-DD')
   const [dates, setDates] = useState<string[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const formatDate = (date: Date, format: string) => {
     const year = date.getFullYear()
@@ -33,7 +37,12 @@ export default function DatesPage() {
     }
   }
 
-  const generateDates = () => {
+  const generateDates = async () => {
+    setIsGenerating(true)
+    
+    // 添加延迟以显示加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     const start = new Date(startDate)
     const end = new Date(endDate)
     const timeDiff = end.getTime() - start.getTime()
@@ -45,6 +54,7 @@ export default function DatesPage() {
     })
     
     setDates(newDates.sort())
+    setIsGenerating(false)
   }
 
   const copyDates = () => {
@@ -52,7 +62,8 @@ export default function DatesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-900 via-red-900 to-pink-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-orange-900 via-red-900 to-pink-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Date Generator</h1>
@@ -119,9 +130,24 @@ export default function DatesPage() {
                   </Select>
                 </div>
               </div>
-              <Button onClick={generateDates} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate Dates
+              <Button 
+                onClick={generateDates} 
+                disabled={isGenerating}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate Dates
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -143,7 +169,7 @@ export default function DatesPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2" data-result="true">
                   {dates.map((date, index) => (
                     <div key={index} className="bg-white/20 rounded-lg p-3 text-center text-white font-mono">
                       {date}

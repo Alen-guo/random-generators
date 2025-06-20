@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Palette, Shuffle, Copy } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
+import { Navigation } from '@/components/common/Navigation'
 
 interface RGBColor {
   r: number
@@ -17,19 +19,26 @@ interface RGBColor {
 export default function RGBPage() {
   const [count, setCount] = useState(10)
   const [colors, setColors] = useState<RGBColor[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
+  const containerRef = useTranslationProtection()
 
-  const generateColors = () => {
-    const newColors = Array.from({length: count}, () => {
-      const r = Math.floor(Math.random() * 256)
-      const g = Math.floor(Math.random() * 256)
-      const b = Math.floor(Math.random() * 256)
-      return {
-        r, g, b,
-        rgb: `rgb(${r}, ${g}, ${b})`,
-        hex: `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase()
-      }
-    })
-    setColors(newColors)
+  const generateColors = async () => {
+    setIsGenerating(true)
+    try {
+      const newColors = Array.from({length: count}, () => {
+        const r = Math.floor(Math.random() * 256)
+        const g = Math.floor(Math.random() * 256)
+        const b = Math.floor(Math.random() * 256)
+        return {
+          r, g, b,
+          rgb: `rgb(${r}, ${g}, ${b})`,
+          hex: `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase()
+        }
+      })
+      setColors(newColors)
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const copyColor = (color: RGBColor) => {
@@ -37,7 +46,8 @@ export default function RGBPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-green-900 to-teal-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-blue-900 via-green-900 to-teal-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">RGB Color Generator</h1>
@@ -67,9 +77,24 @@ export default function RGBPage() {
                   className="bg-white/10 border-white/20 text-white"
                 />
               </div>
-              <Button onClick={generateColors} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate RGB Colors
+              <Button 
+                onClick={generateColors} 
+                disabled={isGenerating}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate RGB Colors
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>

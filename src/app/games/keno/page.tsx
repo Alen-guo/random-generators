@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Shuffle, RotateCcw, Copy, Download, Star, Zap } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface KenoConfig {
   spots: number // 选择的号码数量
@@ -33,6 +34,7 @@ const presets = [
 ]
 
 export default function KenoPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<KenoConfig>({
     spots: 10,
     maxNumber: 80,
@@ -123,7 +125,7 @@ export default function KenoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -212,7 +214,9 @@ export default function KenoPage() {
                   <Button 
                     onClick={generateKenoNumbers}
                     disabled={isGenerating}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isGenerating ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

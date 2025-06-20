@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+/* 翻译保护样式 - 只影响标记的元素 */
+.notranslate {
+  /* 移除user-select限制，只保护翻译 */
+}
+
+/* 为生成器结果添加特殊保护 */
+[data-result="true"],
+[data-interactive="true"] {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 防止翻译插件修改按钮和输入框 */
+button[data-interactive="true"],
+input[data-interactive="true"],
+select[data-interactive="true"],
+textarea[data-interactive="true"] {
+  isolation: isolate;
+}
+
+/* 增强交互元素的DOM稳定性 */
+.generator-container {
+  contain: layout style paint;
+}
+
+/* 防止翻译插件的样式干扰 */
+.translation-protected {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 @layer base {
   :root {
     /* 浅色主题 - 现代化调色板 */

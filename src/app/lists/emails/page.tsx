@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Mail, RefreshCw, Copy, Download, AtSign, Building, User, CheckCircle } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface EmailConfig {
   domains: string[]
@@ -32,6 +33,7 @@ interface GeneratedEmail {
 }
 
 export default function EmailPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<EmailConfig>({
     domains: ['gmail.com', 'yahoo.com', 'outlook.com'],
     formats: ['firstname.lastname', 'firstnamelastname', 'firstname_lastname'],
@@ -292,7 +294,7 @@ export default function EmailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -499,7 +501,9 @@ export default function EmailPage() {
                 <Button
                   onClick={generateEmails}
                   disabled={isGenerating || config.domains.length === 0 || config.formats.length === 0}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -686,5 +690,5 @@ export default function EmailPage() {
         </div>
       </div>
     </div>
-      )
-  }
+  )
+}

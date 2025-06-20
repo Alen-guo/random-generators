@@ -1,19 +1,28 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Database, Shuffle, Copy } from 'lucide-react'
+import { Database, Shuffle, Copy, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export default function SQLPage() {
+  const containerRef = useTranslationProtection()
   const [tableName, setTableName] = useState('users')
   const [rows, setRows] = useState(10)
   const [sqlData, setSqlData] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const generateSQL = () => {
+  const generateSQL = async () => {
+    setIsGenerating(true)
+    
+    // 添加延迟以显示加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     const names = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson']
     const emails = ['john@email.com', 'jane@email.com', 'bob@email.com', 'alice@email.com', 'charlie@email.com']
     const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix']
@@ -38,6 +47,7 @@ export default function SQLPage() {
     }
     
     setSqlData(sql)
+    setIsGenerating(false)
   }
 
   const copySQL = () => {
@@ -45,7 +55,8 @@ export default function SQLPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">SQL Generator</h1>
@@ -86,9 +97,24 @@ export default function SQLPage() {
                   />
                 </div>
               </div>
-              <Button onClick={generateSQL} className="w-full bg-slate-600 hover:bg-slate-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate SQL
+              <Button 
+                onClick={generateSQL} 
+                disabled={isGenerating}
+                className="w-full bg-slate-600 hover:bg-slate-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate SQL
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -114,6 +140,7 @@ export default function SQLPage() {
                   value={sqlData}
                   readOnly
                   className="bg-white/10 border-white/20 text-white font-mono text-sm min-h-[400px]"
+                  data-result="true"
                 />
               </CardContent>
             </Card>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calculator, RefreshCw, Copy, Download, TrendingUp, BarChart2, Settings } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface DecimalResult {
   value: number
@@ -15,6 +16,7 @@ interface DecimalResult {
 }
 
 export default function DecimalGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [minValue, setMinValue] = useState(0)
   const [maxValue, setMaxValue] = useState(100)
   const [decimalPlaces, setDecimalPlaces] = useState(2)
@@ -151,7 +153,7 @@ export default function DecimalGeneratorPage() {
   const statistics = getStatistics()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -169,7 +171,7 @@ export default function DecimalGeneratorPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 左侧：设置面�?*/}
+          {/* 左侧：设置面板 */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
@@ -244,7 +246,9 @@ export default function DecimalGeneratorPage() {
                 <Button 
                   onClick={generateDecimals}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -357,7 +361,7 @@ export default function DecimalGeneratorPage() {
             )}
           </div>
 
-          {/* 右侧：结果显�?*/}
+          {/* 右侧：结果显示 */}
           <div className="lg:col-span-2 space-y-6">
             {results.length > 0 && (
               <>

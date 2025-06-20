@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Copy, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export function NumberGenerator() {
+  const containerRef = useTranslationProtection()
   const [min, setMin] = useState('1')
   const [max, setMax] = useState('100')
   const [result, setResult] = useState<number | null>(null)
@@ -39,7 +41,7 @@ export function NumberGenerator() {
   }
 
   return (
-    <div className="space-y-4">
+    <div ref={containerRef} className="space-y-4">
       {/* 输入区域 */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -68,7 +70,9 @@ export function NumberGenerator() {
       <Button 
         onClick={generateNumber}
         disabled={isGenerating}
-        className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-0"
+        className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-0 notranslate"
+        translate="no"
+        data-interactive="true"
       >
         {isGenerating ? (
           <>
@@ -84,16 +88,18 @@ export function NumberGenerator() {
       {result !== null && (
         <div className="space-y-2">
           <Label className="text-slate-300 text-sm">Result:</Label>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 bg-white/10 border border-white/20 rounded-md p-3 text-center">
-              <span className="text-2xl font-bold text-white">{result}</span>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={copyResult}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-            >
+                  <div className="flex items-center gap-2">
+          <div className="flex-1 bg-white/10 border border-white/20 rounded-md p-3 text-center" translate="no" data-result="true">
+            <span className="text-2xl font-bold text-white notranslate">{result}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={copyResult}
+            className="bg-white/10 border-white/20 text-white hover:bg-white/20 notranslate"
+            translate="no"
+            data-interactive="true"
+          >
               <Copy className="h-4 w-4" />
             </Button>
           </div>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Users, RefreshCw, Copy, Download, Globe, User, Settings } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface NameResult {
   firstName: string
@@ -17,6 +18,7 @@ interface NameResult {
 }
 
 export default function NameGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [nameCount, setNameCount] = useState(10)
   const [gender, setGender] = useState<'any' | 'male' | 'female'>('any')
   const [nameOrigin, setNameOrigin] = useState<'any' | 'american' | 'british' | 'european' | 'asian' | 'spanish' | 'international'>('any')
@@ -162,7 +164,7 @@ export default function NameGeneratorPage() {
   const originStats = getOriginStats()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -246,7 +248,9 @@ export default function NameGeneratorPage() {
                 <Button 
                   onClick={generateNames}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

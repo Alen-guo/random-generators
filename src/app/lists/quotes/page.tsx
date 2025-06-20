@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Quote, RefreshCw, Copy, Heart, Star, BookOpen, Lightbulb } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface QuoteItem {
   text: string
@@ -21,6 +22,7 @@ interface GeneratedQuote extends QuoteItem {
 }
 
 export default function QuotesPage() {
+  const containerRef = useTranslationProtection()
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['motivational'])
   const [currentQuote, setCurrentQuote] = useState<QuoteItem | null>(null)
   const [quoteHistory, setQuoteHistory] = useState<GeneratedQuote[]>([])
@@ -192,7 +194,7 @@ export default function QuotesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -282,7 +284,9 @@ export default function QuotesPage() {
                 <Button
                   onClick={generateQuote}
                   disabled={isGenerating || getFilteredQuotesCount() === 0}
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

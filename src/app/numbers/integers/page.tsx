@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Hash, RefreshCw, Copy, Download, BarChart3, Settings, Info } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface NumberResult {
   value: number
@@ -14,6 +15,7 @@ interface NumberResult {
 }
 
 export default function IntegerGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [min, setMin] = useState(-1000)
   const [max, setMax] = useState(1000)
   const [count, setCount] = useState(10)
@@ -123,7 +125,7 @@ export default function IntegerGeneratorPage() {
   const statistics = getStatistics()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -201,7 +203,9 @@ export default function IntegerGeneratorPage() {
                 <Button 
                   onClick={generateNumbers}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>
@@ -332,7 +336,7 @@ export default function IntegerGeneratorPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 max-h-96 overflow-y-auto">
+                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 max-h-96 overflow-y-auto" data-result="true">
                       {results.map((result, index) => (
                         <div
                           key={index}

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MapPin, RefreshCw, Copy, Download, Globe, Navigation2 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface CoordinateConfig {
   type: 'global' | 'country' | 'region' | 'custom'
@@ -39,6 +40,7 @@ interface GeneratedCoordinate {
 }
 
 export default function CoordinatesPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<CoordinateConfig>({
     type: 'global',
     format: 'decimal',
@@ -294,7 +296,7 @@ ${generatedCoordinates.map(coord =>
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-green-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -555,7 +557,9 @@ ${generatedCoordinates.map(coord =>
                 <Button
                   onClick={generateCoordinates}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

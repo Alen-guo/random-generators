@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BarChart3, RefreshCw, Copy, Download, TrendingUp, Info } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface GaussianConfig {
   mean: number
@@ -27,6 +28,7 @@ interface GeneratedNumber {
 }
 
 export default function GaussianPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<GaussianConfig>({
     mean: 0,
     standardDeviation: 1,
@@ -220,7 +222,7 @@ ${generatedNumbers.map(num => `${num.value},${num.zScore},${num.percentile}%`).j
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -375,7 +377,9 @@ ${generatedNumbers.map(num => `${num.value},${num.zScore},${num.percentile}%`).j
                 <Button
                   onClick={generateNumbers}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

@@ -41,6 +41,7 @@ interface Character {
 }
 
 export default function StoryPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<StoryConfig>({
     genre: ['adventure'],
     length: 'medium',
@@ -405,7 +406,7 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -627,8 +628,10 @@ export default function StoryPage() {
                 <Button
                   onClick={generateStory}
                   disabled={isGenerating || config.genre.length === 0 || config.setting.length === 0 || config.mood.length === 0}
-                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white border-0 font-semibold notranslate"
                 >
+                  translate="no"
+                  data-interactive="true"
                   {isGenerating ? (
                     <>
                       <RefreshCw className="h-4 w-4 mr-2 animate-spin" />

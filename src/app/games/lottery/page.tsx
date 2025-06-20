@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Star, RefreshCw, Copy, Download, Ticket, Trophy, Globe } from 'lucide-react'
+import { Star, RefreshCw, Copy, Download, Ticket, Trophy, Globe, Settings, Info } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface LotteryConfig {
   name: string
@@ -80,6 +81,7 @@ const lotteryConfigs: LotteryConfig[] = [
 ]
 
 export default function LotteryGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [selectedLottery, setSelectedLottery] = useState(lotteryConfigs[0])
   const [customConfig, setCustomConfig] = useState<LotteryConfig>({
     name: 'Custom Lottery',
@@ -184,7 +186,7 @@ export default function LotteryGeneratorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -310,7 +312,9 @@ export default function LotteryGeneratorPage() {
                 <Button 
                   onClick={generateNumbers}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Code, RefreshCw, Copy, Download, Hash, Info, Braces, FileText } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface UUIDResult {
   uuid: string
@@ -15,6 +16,7 @@ interface UUIDResult {
 }
 
 export default function UUIDGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [uuidCount, setUuidCount] = useState(10)
   const [uuidVersion, setUuidVersion] = useState<4 | 1>(4)
   const [results, setResults] = useState<UUIDResult[]>([])
@@ -154,7 +156,7 @@ class Program {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -240,7 +242,9 @@ class Program {
                 <Button 
                   onClick={generateUUIDs}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

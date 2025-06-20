@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Clock, Copy, RefreshCw, Calendar, Globe, Timer } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface TimestampResult {
   unix: number
@@ -17,6 +18,7 @@ interface TimestampResult {
 }
 
 export default function TimestampPage() {
+  const containerRef = useTranslationProtection()
   const [currentTime, setCurrentTime] = useState<TimestampResult | null>(null)
   const [customDate, setCustomDate] = useState('')
   const [customTime, setCustomTime] = useState('')
@@ -185,7 +187,7 @@ export default function TimestampPage() {
   }, [autoUpdate])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -389,7 +391,9 @@ export default function TimestampPage() {
 
                 <Button
                   onClick={generateCustomTimestamp}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   <Clock className="h-4 w-4 mr-2" />
                   Generate Timestamp
@@ -425,7 +429,9 @@ export default function TimestampPage() {
 
                 <Button
                   onClick={convertFromTimestamp}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Convert

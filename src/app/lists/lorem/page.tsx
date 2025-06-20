@@ -11,8 +11,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Navigation } from '@/components/common/Navigation'
-import { Copy, Download, RefreshCw, FileText, Type, AlignLeft, Hash, Zap } from 'lucide-react'
+import { Copy, Download, RefreshCw, FileText, Type, AlignLeft, Hash, Zap, Settings, BarChart3, Info } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 // Lorem ipsum 基础文本库
 const LOREM_WORDS = [
@@ -82,6 +83,7 @@ const presets = [
 ]
 
 export default function LoremGenerator() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<LoremConfig>({
     type: 'paragraphs',
     count: 3,
@@ -255,7 +257,7 @@ export default function LoremGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-orange-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-orange-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8 pt-24">
@@ -464,7 +466,9 @@ export default function LoremGenerator() {
                   <Button
                     onClick={generateText}
                     disabled={isGenerating}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
                     {isGenerating ? (
                       <>

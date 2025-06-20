@@ -33,6 +33,7 @@ interface GeneratedGradient {
 }
 
 export default function GradientsPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<GradientConfig>({
     type: 'linear',
     colorCount: 3,
@@ -335,7 +336,7 @@ ${generatedGradients.map((gradient, index) => `
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -545,8 +546,10 @@ ${generatedGradients.map((gradient, index) => `
                 <Button
                   onClick={generateGradients}
                   disabled={isGenerating}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 font-semibold notranslate"
                 >
+                  translate="no"
+                  data-interactive="true"
                   {isGenerating ? (
                     <>
                       <RefreshCw className="h-4 w-4 mr-2 animate-spin" />

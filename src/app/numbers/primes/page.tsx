@@ -1,17 +1,21 @@
 "use client"
 
 import { useState } from 'react'
+import { Navigation } from '@/components/common/Navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Hash, Shuffle } from 'lucide-react'
+import { Hash, Shuffle, RefreshCw } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 export default function PrimesPage() {
+  const containerRef = useTranslationProtection()
   const [count, setCount] = useState(20)
   const [min, setMin] = useState(2)
   const [max, setMax] = useState(1000)
   const [primes, setPrimes] = useState<number[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const isPrime = (num: number) => {
     if (num < 2) return false
@@ -21,7 +25,12 @@ export default function PrimesPage() {
     return true
   }
 
-  const generatePrimes = () => {
+  const generatePrimes = async () => {
+    setIsGenerating(true)
+    
+    // 添加延迟以显示加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     const result: number[] = []
     let current = Math.max(2, min)
     
@@ -33,10 +42,12 @@ export default function PrimesPage() {
     }
     
     setPrimes(result)
+    setIsGenerating(false)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-orange-900 to-yellow-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-red-900 via-orange-900 to-yellow-900">
+      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Prime Numbers Generator</h1>
@@ -89,9 +100,24 @@ export default function PrimesPage() {
                   />
                 </div>
               </div>
-              <Button onClick={generatePrimes} className="w-full bg-red-600 hover:bg-red-700 text-white">
-                <Shuffle className="h-4 w-4 mr-2" />
-                Generate Primes
+              <Button 
+                onClick={generatePrimes} 
+                disabled={isGenerating}
+                className="w-full bg-red-600 hover:bg-red-700 text-white notranslate"
+                translate="no"
+                data-interactive="true"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate Primes
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -102,7 +128,7 @@ export default function PrimesPage() {
                 <CardTitle className="text-white">Generated Prime Numbers</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-10 gap-2" data-result="true">
                   {primes.map((prime, index) => (
                     <div key={index} className="bg-white/20 rounded-lg p-3 text-center text-white font-mono">
                       {prime}

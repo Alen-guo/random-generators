@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Coins, RefreshCw, History, Info, TrendingUp } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface CoinResult {
   result: 'heads' | 'tails'
@@ -14,6 +15,7 @@ interface CoinResult {
 }
 
 export default function CoinFlipperPage() {
+  const containerRef = useTranslationProtection()
   const [numFlips, setNumFlips] = useState(1)
   const [results, setResults] = useState<CoinResult[]>([])
   const [history, setHistory] = useState<CoinResult[]>([])
@@ -56,7 +58,7 @@ export default function CoinFlipperPage() {
   const stats = getStats()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -188,7 +190,9 @@ export default function CoinFlipperPage() {
                 <Button 
                   onClick={flipCoins}
                   disabled={isFlipping}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 font-semibold text-lg py-6"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0 font-semibold text-lg py-6 notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isFlipping ? (
                     <>
