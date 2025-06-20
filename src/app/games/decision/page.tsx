@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RotateCcw, RefreshCw, Plus, Trash2, Settings, Play, Copy, Download } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface WheelOption {
   id: string
@@ -23,6 +24,7 @@ interface SpinResult {
 }
 
 export default function DecisionPage() {
+  const containerRef = useTranslationProtection()
   const [options, setOptions] = useState<WheelOption[]>([
     { id: '1', text: 'Option 1', weight: 1, color: '#FF6B6B' },
     { id: '2', text: 'Option 2', weight: 1, color: '#4ECDC4' },
@@ -225,7 +227,7 @@ export default function DecisionPage() {
   const segments = calculateSegments()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -318,7 +320,9 @@ export default function DecisionPage() {
                     <Button
                       onClick={spinWheel}
                       disabled={isSpinning || options.length < 2}
-                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 font-semibold px-8 py-3"
+                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 font-semibold px-8 py-3 notranslate"
+                      translate="no"
+                      data-interactive="true"
                     >
                       {isSpinning ? (
                         <>
@@ -612,5 +616,5 @@ export default function DecisionPage() {
         </div>
       </div>
     </div>
-      )
-  }
+  )
+}

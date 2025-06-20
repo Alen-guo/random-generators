@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Type, RefreshCw, Copy, Download, Settings, Hash, Eye, EyeOff } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface StringResult {
   value: string
@@ -15,6 +16,7 @@ interface StringResult {
 }
 
 export default function StringGeneratorPage() {
+  const containerRef = useTranslationProtection()
   const [stringLength, setStringLength] = useState(12)
   const [stringCount, setStringCount] = useState(10)
   const [includeUppercase, setIncludeUppercase] = useState(true)
@@ -198,7 +200,7 @@ export default function StringGeneratorPage() {
   const charsetInfo = getCharsetInfo()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -335,7 +337,9 @@ export default function StringGeneratorPage() {
                 <Button 
                   onClick={generateStrings}
                   disabled={isGenerating || charsetInfo.length === 0}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 font-semibold"
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white border-0 font-semibold notranslate"
+                  translate="no"
+                  data-interactive="true"
                 >
                   {isGenerating ? (
                     <>

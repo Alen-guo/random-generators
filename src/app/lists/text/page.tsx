@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { FileText, RefreshCw, Copy, Download, Type, BookOpen, Hash } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface TextConfig {
   type: 'lorem' | 'words' | 'sentences' | 'paragraphs' | 'placeholder'
@@ -26,6 +27,7 @@ interface GeneratedText {
 }
 
 export default function TextPage() {
+  const containerRef = useTranslationProtection()
   const [config, setConfig] = useState<TextConfig>({
     type: 'paragraphs',
     count: 3,

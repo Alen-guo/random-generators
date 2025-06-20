@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Binary, ArrowLeftRight, Copy, RefreshCw, Hash, Calculator } from 'lucide-react'
+import { useTranslationProtection } from '@/hooks/useTranslationProtection'
 
 interface ConversionResult {
   decimal: string
@@ -17,14 +18,20 @@ interface ConversionResult {
 }
 
 export default function BinaryConverterPage() {
+  const containerRef = useTranslationProtection()
   const [input, setInput] = useState('')
   const [inputType, setInputType] = useState<'decimal' | 'binary' | 'hex' | 'text'>('decimal')
   const [result, setResult] = useState<ConversionResult | null>(null)
   const [error, setError] = useState('')
   const [history, setHistory] = useState<ConversionResult[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const convert = () => {
+  const convert = async () => {
+    setIsGenerating(true)
     setError('')
+    
+    // Add delay for loading state
+    await new Promise(resolve => setTimeout(resolve, 300))
     
     try {
       let decimalValue: number
@@ -95,6 +102,8 @@ export default function BinaryConverterPage() {
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Conversion error')
+    } finally {
+      setIsGenerating(false)
     }
   }
 
@@ -150,7 +159,7 @@ export default function BinaryConverterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
@@ -243,10 +252,22 @@ export default function BinaryConverterPage() {
                 <div className="flex gap-2">
                   <Button
                     onClick={convert}
-                    className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0"
+                    disabled={isGenerating}
+                    className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 notranslate"
+                    translate="no"
+                    data-interactive="true"
                   >
-                    <ArrowLeftRight className="h-4 w-4 mr-2" />
-                    Convert
+                    {isGenerating ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Converting...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowLeftRight className="h-4 w-4 mr-2" />
+                        Convert
+                      </>
+                    )}
                   </Button>
                   <Button
                     onClick={generateRandom}
