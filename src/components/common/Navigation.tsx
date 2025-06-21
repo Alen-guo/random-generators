@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -167,6 +167,9 @@ export function Navigation() {
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchIndex] = useState(() => createSearchIndex())
+  
+  // 添加延迟隐藏的 ref
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // 搜索功能
   useEffect(() => {
@@ -183,6 +186,48 @@ export function Navigation() {
       setShowSearchResults(false)
     }
   }, [searchQuery, searchIndex])
+
+  // 处理鼠标进入主菜单
+  const handleMouseEnter = (itemName: string) => {
+    // 清除之前的延迟隐藏
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+    setActiveDropdown(itemName)
+  }
+
+  // 处理鼠标离开主菜单区域
+  const handleMouseLeave = () => {
+    // 设置延迟隐藏，给用户时间移动到下拉菜单
+    hideTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null)
+    }, 150) // 150ms 的缓冲时间
+  }
+
+  // 处理鼠标进入下拉菜单
+  const handleDropdownMouseEnter = () => {
+    // 清除延迟隐藏
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+  }
+
+  // 处理鼠标离开下拉菜单
+  const handleDropdownMouseLeave = () => {
+    // 立即隐藏下拉菜单
+    setActiveDropdown(null)
+  }
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleSearchSelect = (href: string) => {
     router.push(href)
@@ -218,8 +263,8 @@ export function Navigation() {
                 <div
                   key={item.name}
                   className="relative"
-                  onMouseEnter={() => hasDropdown && setActiveDropdown(item.name)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  onMouseEnter={() => hasDropdown && handleMouseEnter(item.name)}
+                  onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
                 >
                   <Button
                     variant="ghost"
@@ -245,7 +290,11 @@ export function Navigation() {
 
                   {/* 下拉菜单 */}
                   {hasDropdown && activeDropdown === item.name && (
-                    <div className="absolute top-full left-0 mt-1 w-72 bg-slate-800/95 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl z-50">
+                    <div 
+                      className="absolute top-full left-0 mt-1 w-72 bg-slate-800/95 backdrop-blur-sm border border-white/20 rounded-lg shadow-xl z-50"
+                      onMouseEnter={handleDropdownMouseEnter}
+                      onMouseLeave={handleDropdownMouseLeave}
+                    >
                       <div className="py-2 max-h-96 overflow-y-auto">
                         {item.dropdown!.map((dropdownItem) => (
                           <a
